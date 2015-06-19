@@ -2030,15 +2030,18 @@ TBuiltInResource DefaultResources = {
   /*.maxCombinedClipAndCullDistances =*/ 8,
   /*.maxSamples =*/ 4,
 
-  /*.limits.nonInductiveForLoops =*/ 1,
-  /*.limits.whileLoops =*/ 1,
-  /*.limits.doWhileLoops =*/ 1,
-  /*.limits.generalUniformIndexing =*/ 1,
-  /*.limits.generalAttributeMatrixVectorIndexing =*/ 1,
-  /*.limits.generalVaryingIndexing =*/ 1,
-  /*.limits.generalSamplerIndexing =*/ 1,
-  /*.limits.generalVariableIndexing =*/ 1,
-  /*.limits.generalConstantMatrixVectorIndexing =*/ 1
+  /*.limits*/
+  {
+    /*.limits.nonInductiveForLoops =*/ 1,
+    /*.limits.whileLoops =*/ 1,
+    /*.limits.doWhileLoops =*/ 1,
+    /*.limits.generalUniformIndexing =*/ 1,
+    /*.limits.generalAttributeMatrixVectorIndexing =*/ 1,
+    /*.limits.generalVaryingIndexing =*/ 1,
+    /*.limits.generalSamplerIndexing =*/ 1,
+    /*.limits.generalVariableIndexing =*/ 1,
+    /*.limits.generalConstantMatrixVectorIndexing =*/ 1,
+  },
 };
 
 string CompileSPIRV(GLenum shadType, const std::vector<std::string> &sources, vector<uint32_t> &spirv)
@@ -2117,7 +2120,7 @@ void DisassembleSPIRV(GLenum shadType, const vector<uint32_t> &spirv, string &di
 	disasm = header[ShaderIdx(shadType)];
 	disasm += " SPIR-V:\n\n";
 
-	if(spirv[0] != spv::MagicNumber)
+	if(spirv[0] != (uint32_t)spv::MagicNumber)
 	{
 		disasm += StringFormat::Fmt("Unrecognised magic number %08x", spirv[0]);
 		return;
@@ -2127,7 +2130,7 @@ void DisassembleSPIRV(GLenum shadType, const vector<uint32_t> &spirv, string &di
 
 	// list of known generators, just for kicks
 	struct { uint32_t magic; const char *name; } gens[] = {
-		0x051a00bb, "glslang",
+		{ 0x051a00bb, "glslang" },
 	};
 
 	for(size_t i=0; i < ARRAY_COUNT(gens); i++) if(gens[i].magic == spirv[2])	gen = gens[i].name;
@@ -2219,6 +2222,7 @@ void DisassembleSPIRV(GLenum shadType, const vector<uint32_t> &spirv, string &di
 	}
 }
 
+template<>
 string ToStrHelper<false, spv::Op>::Get(const spv::Op &el)
 {
 	switch(el)
@@ -2496,6 +2500,7 @@ string ToStrHelper<false, spv::Op>::Get(const spv::Op &el)
 	return "Unrecognised";
 }
 
+template<>
 string ToStrHelper<false, spv::SourceLanguage>::Get(const spv::SourceLanguage &el)
 {
 	switch(el)
@@ -2510,6 +2515,7 @@ string ToStrHelper<false, spv::SourceLanguage>::Get(const spv::SourceLanguage &e
 	return "Unrecognised";
 }
 
+template<>
 string ToStrHelper<false, spv::AddressingModel>::Get(const spv::AddressingModel &el)
 {
 	switch(el)
@@ -2523,6 +2529,7 @@ string ToStrHelper<false, spv::AddressingModel>::Get(const spv::AddressingModel 
 	return "Unrecognised";
 }
 
+template<>
 string ToStrHelper<false, spv::MemoryModel>::Get(const spv::MemoryModel &el)
 {
 	switch(el)
@@ -2538,6 +2545,7 @@ string ToStrHelper<false, spv::MemoryModel>::Get(const spv::MemoryModel &el)
 	return "Unrecognised";
 }
 
+template<>
 string ToStrHelper<false, spv::ExecutionModel>::Get(const spv::ExecutionModel &el)
 {
 	switch(el)

@@ -9,6 +9,39 @@ CFLAGS=-c -Wall -Werror -Wno-unused -Wno-unknown-pragmas -fPIC $(MACROS) -I. -I3
 CPPFLAGS=-std=c++11 -g -Wno-reorder -fvisibility=hidden -fvisibility-inlines-hidden
 LDFLAGS=-lpthread -lrt -shared -ldl -lX11
 OBJDIR=.obj
+
+GLSLANG_OBJECTS=3rdparty/glslang/OGLCompilersDLL/InitializeDll.o \
+3rdparty/glslang/SPIRV/GlslangToSpv.o \
+3rdparty/glslang/SPIRV/SpvBuilder.o \
+3rdparty/glslang/glslang/GenericCodeGen/CodeGen.o \
+3rdparty/glslang/glslang/GenericCodeGen/Link.o \
+3rdparty/glslang/glslang/MachineIndependent/Constant.o \
+3rdparty/glslang/glslang/MachineIndependent/glslang_tab.o \
+3rdparty/glslang/glslang/MachineIndependent/InfoSink.o \
+3rdparty/glslang/glslang/MachineIndependent/Initialize.o \
+3rdparty/glslang/glslang/MachineIndependent/Intermediate.o \
+3rdparty/glslang/glslang/MachineIndependent/intermOut.o \
+3rdparty/glslang/glslang/MachineIndependent/IntermTraverse.o \
+3rdparty/glslang/glslang/MachineIndependent/limits.o \
+3rdparty/glslang/glslang/MachineIndependent/linkValidate.o \
+3rdparty/glslang/glslang/MachineIndependent/parseConst.o \
+3rdparty/glslang/glslang/MachineIndependent/ParseHelper.o \
+3rdparty/glslang/glslang/MachineIndependent/PoolAlloc.o \
+3rdparty/glslang/glslang/MachineIndependent/reflection.o \
+3rdparty/glslang/glslang/MachineIndependent/RemoveTree.o \
+3rdparty/glslang/glslang/MachineIndependent/Scan.o \
+3rdparty/glslang/glslang/MachineIndependent/ShaderLang.o \
+3rdparty/glslang/glslang/MachineIndependent/SymbolTable.o \
+3rdparty/glslang/glslang/MachineIndependent/Versions.o \
+3rdparty/glslang/glslang/MachineIndependent/preprocessor/Pp.o \
+3rdparty/glslang/glslang/MachineIndependent/preprocessor/PpAtom.o \
+3rdparty/glslang/glslang/MachineIndependent/preprocessor/PpContext.o \
+3rdparty/glslang/glslang/MachineIndependent/preprocessor/PpMemory.o \
+3rdparty/glslang/glslang/MachineIndependent/preprocessor/PpScanner.o \
+3rdparty/glslang/glslang/MachineIndependent/preprocessor/PpSymbols.o \
+3rdparty/glslang/glslang/MachineIndependent/preprocessor/PpTokens.o \
+3rdparty/glslang/glslang/OSDependent/Linux/ossource.o
+
 OBJECTS=replay/replay_output.o \
 replay/replay_renderer.o \
 replay/entry_points.o \
@@ -34,6 +67,7 @@ os/os_specific.o \
 3rdparty/lz4/lz4.o \
 3rdparty/stb/stb_impl.o \
 3rdparty/tinyexr/tinyexr.o \
+$(GLSLANG_OBJECTS) \
 driver/gl/gl_common.o \
 driver/gl/gl_driver.o \
 driver/gl/gl_manager.o \
@@ -62,6 +96,7 @@ os/linux/linux_process.o \
 os/linux/linux_stringio.o \
 os/linux/linux_threading.o \
 hooks/linux_libentry.o
+
 DATA=data/glsl/debuguniforms.ho \
 data/glsl/texsample.ho \
 data/glsl/blit.frago \
@@ -82,6 +117,11 @@ data/sourcecodepro.ttfo
 
 .PHONY: all
 all: librenderdoc.so
+
+# glslang needs -Wno-error added :(
+GLSLANG_OBJDIR_OBJECTS=$(addprefix $(OBJDIR)/, $(GLSLANG_OBJECTS))
+
+$(GLSLANG_OBJDIR_OBJECTS): CPPFLAGS += -Wno-error
 
 $(OBJDIR)/%.o: %.cpp
 	@mkdir -p $$(dirname $@)

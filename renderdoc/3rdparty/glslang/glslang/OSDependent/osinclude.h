@@ -31,20 +31,16 @@
 //ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //POSSIBILITY OF SUCH DAMAGE.
 //
-#ifndef __INITIALIZEDLL_H
-#define __INITIALIZEDLL_H
 
+#ifndef __ROOT_OSINCLUDE_H
+#define __ROOT_OSINCLUDE_H
 
-#include "../glslang/OSDependent/osinclude.h"
+#if defined(WIN32)
+#include "Windows/osinclude.h"
+#elif defined(__linux__)
+#include "Linux/osinclude.h"
+#else
+#error "Unknown platform"
+#endif
 
-namespace glslang {
-
-bool InitProcess();
-bool InitThread();
-bool DetachThread();
-bool DetachProcess();
-
-} // end namespace glslang
-
-#endif // __INITIALIZEDLL_H
-
+#endif // __ROOT_OSINCLUDE_H
